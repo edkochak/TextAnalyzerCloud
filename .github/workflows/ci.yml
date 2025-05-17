@@ -48,6 +48,7 @@ jobs:
       with:
         directory: ./coverage/
         token: ${{ secrets.CODECOV_TOKEN }}
+        slug: ${{ github.repository }}  # Явно указываем имя репозитория из контекста GitHub
         fail_ci_if_error: true
     
     - name: Install ReportGenerator tool
