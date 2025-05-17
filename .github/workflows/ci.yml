@@ -28,17 +28,25 @@ jobs:
 
     - name: Run tests and collect coverage
       run: |
-        mkdir -p coverage
-        dotnet test FileStorageService.Tests/FileStorageService.Tests.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage/fss_coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
-        dotnet test FileAnalysisService.Tests/FileAnalysisService.Tests.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage/fas_coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
+        mkdir -p "$GITHUB_WORKSPACE/coverage"
+        dotnet test FileStorageService.Tests/FileStorageService.Tests.csproj --no-build --configuration Release \
+          /p:CollectCoverage=true \
+          /p:CoverletOutputFormat=opencover \
+          /p:CoverletOutput="$GITHUB_WORKSPACE/coverage/fss_coverage.opencover.xml" \
+          /p:ExcludeByFile="**/*Migrations/*.cs"
+        dotnet test FileAnalysisService.Tests/FileAnalysisService.Tests.csproj --no-build --configuration Release \
+          /p:CollectCoverage=true \
+          /p:CoverletOutputFormat=opencover \
+          /p:CoverletOutput="$GITHUB_WORKSPACE/coverage/fas_coverage.opencover.xml" \
+          /p:ExcludeByFile="**/*Migrations/*.cs"
       shell: bash
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       with:
         files: |
-          ./coverage/fss_coverage.opencover.xml
-          ./coverage/fas_coverage.opencover.xml
+          coverage/fss_coverage.opencover.xml
+          coverage/fas_coverage.opencover.xml
         fail_ci_if_error: true
     
     - name: Install ReportGenerator tool
