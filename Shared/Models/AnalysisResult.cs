@@ -35,7 +35,7 @@ namespace Shared.Models
         /// <summary>
         /// Локация картинки облака слов.
         /// </summary>
-        public string WordCloudLocation { get; set; }
+        public required string WordCloudLocation { get; set; }
 
         /// <summary>
         /// Дата выполнения анализа.

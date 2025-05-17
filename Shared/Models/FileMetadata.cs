@@ -15,17 +15,17 @@ namespace Shared.Models
         /// <summary>
         /// Оригинальное имя файла.
         /// </summary>
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         /// <summary>
         /// SHA-256 хеш содержимого файла.
         /// </summary>
-        public string Hash { get; set; }
+        public required string Hash { get; set; }
 
         /// <summary>
         /// Локация файла в хранилище (путь или ключ).
         /// </summary>
-        public string Location { get; set; }
+        public required string Location { get; set; }
 
         /// <summary>
         /// Время загрузки файла.

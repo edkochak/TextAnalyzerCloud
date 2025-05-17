@@ -48,14 +48,15 @@ namespace FileStorageService.Tests
         [Fact]
         public async Task Upload_NullFile_ReturnsBadRequest()
         {
-            var result = await _controller.Upload(null);
+            // В .NET 9 необходимо использовать null! вместо null для параметров типа IFormFile?
+            var result = await _controller.Upload(null!);
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
         [Fact]
         public async Task Upload_EmptyFile_ReturnsBadRequest()
         {
-            var emptyFile = new FormFile(Stream.Null, 0, 0, null, "empty.txt");
+            var emptyFile = new FormFile(Stream.Null, 0, 0, "file", "empty.txt");
             var result = await _controller.Upload(emptyFile);
             Assert.IsType<BadRequestObjectResult>(result);
         }
