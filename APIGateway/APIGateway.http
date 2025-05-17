@@ -1,0 +1,35 @@
+@APIGateway_HostAddress = http://localhost:5019
+
+GET {{APIGateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+### Загрузка файла в FileStorage через API Gateway
+@FilePath = ./test/report.txt
+
+POST {{APIGateway_HostAddress}}/files
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="report.txt"
+Content-Type: text/plain
+
+< {{FilePath}}
+------WebKitFormBoundary--
+
+### Получение файла по id (заменить {{fileId}} на реальный id)
+GET {{APIGateway_HostAddress}}/files/{{fileId}}
+Accept: application/octet-stream
+
+### Запрос анализа файла по id
+POST {{APIGateway_HostAddress}}/analysis/{{fileId}}
+Accept: application/json
+
+### Получение результата анализа файла по id
+GET {{APIGateway_HostAddress}}/analysis/{{fileId}}
+Accept: application/json
+
+### Получение изображения облака слов по cloudId
+GET {{APIGateway_HostAddress}}/analysis/cloud/{{cloudId}}
+Accept: image/png
+
+###

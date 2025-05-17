@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore PlagiarismChecker.sln
+
+    - name: Build solution
+      run: dotnet build PlagiarismChecker.sln --no-restore --configuration Release
+
+    - name: Run tests and collect coverage
+      run: |
+        dotnet test FileStorageService.Tests/FileStorageService.Tests.csproj --no-build --configuration Release --collect:"XPlat Code Coverage"
+        dotnet test FileAnalysisService.Tests/FileAnalysisService.Tests.csproj --no-build --configuration Release --collect:"XPlat Code Coverage"
+      shell: bash
+
+    - name: Report coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: |
+          **/TestResults/**/*.coverage.json
+        fail_ci_if_error: true

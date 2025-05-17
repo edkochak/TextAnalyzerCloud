@@ -1,0 +1,66 @@
+{
+    "Routes": [
+        {
+            "DownstreamPathTemplate": "/api/files",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5062
+                }
+            ],
+            "UpstreamPathTemplate": "/files",
+            "UpstreamHttpMethod": [
+                "POST"
+            ]
+        },
+        {
+            "DownstreamPathTemplate": "/api/files/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5062
+                }
+            ],
+            "UpstreamPathTemplate": "/files/{everything}",
+            "UpstreamHttpMethod": [
+                "GET"
+            ]
+        },
+        {
+            "DownstreamPathTemplate": "/api/analysis/cloud/{cloudId}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5250
+                }
+            ],
+            "UpstreamPathTemplate": "/analysis/cloud/{cloudId}",
+            "UpstreamHttpMethod": [
+                "GET"
+            ],
+            "Priority": 1
+        },
+        {
+            "DownstreamPathTemplate": "/api/analysis/{fileId}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5250
+                }
+            ],
+            "UpstreamPathTemplate": "/analysis/{fileId}",
+            "UpstreamHttpMethod": [
+                "GET",
+                "POST"
+            ],
+            "Priority": 0
+        }
+    ],
+    "GlobalConfiguration": {
+        "RequestIdKey": "OcRequestId"
+    }
+}
