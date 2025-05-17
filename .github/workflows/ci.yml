@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # Важно для корректного анализа покрытия кода
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
@@ -26,13 +28,34 @@ jobs:
 
     - name: Run tests and collect coverage
       run: |
-        dotnet test FileStorageService.Tests/FileStorageService.Tests.csproj --no-build --configuration Release --collect:"XPlat Code Coverage"
-        dotnet test FileAnalysisService.Tests/FileAnalysisService.Tests.csproj --no-build --configuration Release --collect:"XPlat Code Coverage"
+        dotnet test FileStorageService.Tests/FileStorageService.Tests.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
+        dotnet test FileAnalysisService.Tests/FileAnalysisService.Tests.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
       shell: bash
 
-    - name: Report coverage to Codecov
+    - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       with:
         files: |
-          **/TestResults/**/*.coverage.json
+          FileStorageService.Tests/coverage.opencover.xml
+          FileAnalysisService.Tests/coverage.opencover.xml
         fail_ci_if_error: true
+    
+    - name: Install ReportGenerator tool
+      run: dotnet tool install -g dotnet-reportgenerator-globaltool
+      
+    - name: Merge coverage reports and generate summary
+      run: |
+        reportgenerator -reports:"**/coverage.opencover.xml" -targetdir:"./coveragereport" -reporttypes:"Html;TextSummary"
+        cat ./coveragereport/Summary.txt
+        
+    - name: Check coverage threshold (65%)
+      run: |
+        COVERAGE=$(cat ./coveragereport/Summary.txt | grep -o "Line coverage: [0-9.]*%" | grep -o "[0-9.]*")
+        echo "Line coverage: $COVERAGE%"
+        if (( $(echo "$COVERAGE < 65" | bc -l) )); then
+          echo "Coverage below threshold: $COVERAGE% < 65%"
+          exit 1
+        else
+          echo "Coverage satisfies threshold: $COVERAGE% >= 65%"
+        fi
+      shell: bash

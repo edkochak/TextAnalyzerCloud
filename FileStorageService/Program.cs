@@ -11,11 +11,14 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Применение миграций при старте
-using (var scope = app.Services.CreateScope())
+// Применение миграций при старте, но пропускаем в режиме тестирования
+if (Environment.GetEnvironmentVariable("SKIP_DB_MIGRATION") != "true")
 {
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        db.Database.Migrate();
+    }
 }
 
 // Configure the HTTP request pipeline.
@@ -49,7 +52,7 @@ app.Run();
 
 public partial class Program { }
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+public record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }

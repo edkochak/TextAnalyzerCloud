@@ -74,10 +74,14 @@ appsettings.Development.json
 launchSettings.json
 
 # Results & logs
-TestResults/
-.coverage/
-coverage.json
-coverage.xml
+# TestResults/
+# .coverage/
+# coverage.json
+# coverage.xml
+# *.opencover.xml
+coveragereport/
+**/coveragereport/*
+**/coverage.opencover.xml
 
 # Файлы хранения (загруженные файлы)
 StoredFiles/

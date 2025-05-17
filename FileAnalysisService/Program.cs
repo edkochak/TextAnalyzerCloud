@@ -21,11 +21,14 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Apply migrations
-using (var scope = app.Services.CreateScope())
+// Apply migrations, но пропускаем в режиме тестирования
+if (Environment.GetEnvironmentVariable("SKIP_DB_MIGRATION") != "true")
 {
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.Migrate();
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        db.Database.Migrate();
+    }
 }
 
 // Configure the HTTP request pipeline.

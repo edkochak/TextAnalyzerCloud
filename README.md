@@ -77,7 +77,26 @@ User → API Gateway (http://localhost:5020)
 
 ## Качество кода и тесты
 - Модульная структура, чистый код, обработка ошибок.
-- Поддерживается покрытие тестами (≥65%).
+- Настроено автоматизированное тестирование через GitHub Actions.
+- Поддерживается покрытие тестами (текущее покрытие 85.9%, требуемый порог ≥65%).
+- Настроен анализ покрытия кода через Coverlet и ReportGenerator.
+- Исключены файлы миграций из анализа покрытия кода.
+
+### Запуск тестов локально
+```bash
+# Запуск тестов с покрытием
+cd FileStorageService.Tests
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:ExcludeByFile="**/*Migrations/*.cs"
+
+cd ../FileAnalysisService.Tests
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:ExcludeByFile="**/*Migrations/*.cs"
+```
 
 ---
 Все требования по заданию реализованы: маршрутизация через API Gateway, разделение ответственности микросервисов, настройки EF Core, Swagger, внешнее API Word-Cloud и сохранение результатов.
+
+## История изменений
+История изменений проекта доступна в файле [CHANGELOG.md](CHANGELOG.md)
+
+## Дополнительная документация
+- [Руководство по CI и тестированию](TESTING.md) - подробная информация о CI, запуске тестов и анализе покрытия кода
