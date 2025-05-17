@@ -28,16 +28,17 @@ jobs:
 
     - name: Run tests and collect coverage
       run: |
-        dotnet test FileStorageService.Tests/FileStorageService.Tests.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
-        dotnet test FileAnalysisService.Tests/FileAnalysisService.Tests.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
+        mkdir -p coverage
+        dotnet test FileStorageService.Tests/FileStorageService.Tests.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage/fss_coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
+        dotnet test FileAnalysisService.Tests/FileAnalysisService.Tests.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage/fas_coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
       shell: bash
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       with:
         files: |
-          FileStorageService.Tests/coverage.opencover.xml
-          FileAnalysisService.Tests/coverage.opencover.xml
+          ./coverage/fss_coverage.opencover.xml
+          ./coverage/fas_coverage.opencover.xml
         fail_ci_if_error: true
     
     - name: Install ReportGenerator tool
@@ -45,7 +46,7 @@ jobs:
       
     - name: Merge coverage reports and generate summary
       run: |
-        reportgenerator -reports:"**/coverage.opencover.xml" -targetdir:"./coveragereport" -reporttypes:"Html;TextSummary"
+        reportgenerator -reports:"./coverage/*.xml" -targetdir:"./coveragereport" -reporttypes:"Html;TextSummary"
         cat ./coveragereport/Summary.txt
         
     - name: Check coverage threshold (65%)

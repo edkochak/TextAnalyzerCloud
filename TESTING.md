@@ -21,11 +21,14 @@ dotnet test PlagiarismChecker.sln
 ### Запуск тестов с покрытием
 
 ```bash
+# Создаем директорию для отчетов
+mkdir -p coverage
+
 # FileStorageService.Tests
-dotnet test FileStorageService.Tests/FileStorageService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
+dotnet test FileStorageService.Tests/FileStorageService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage/fss_coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
 
 # FileAnalysisService.Tests
-dotnet test FileAnalysisService.Tests/FileAnalysisService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
+dotnet test FileAnalysisService.Tests/FileAnalysisService.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./coverage/fas_coverage.opencover.xml /p:ExcludeByFile="**/*Migrations/*.cs"
 ```
 
 ### Генерация HTML-отчета о покрытии
@@ -39,7 +42,7 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
 Создайте отчет:
 
 ```bash
-reportgenerator -reports:"**/coverage.opencover.xml" -targetdir:"./coveragereport" -reporttypes:"Html;TextSummary"
+reportgenerator -reports:"./coverage/*.xml" -targetdir:"./coveragereport" -reporttypes:"Html;TextSummary"
 ```
 
 Откройте отчет в браузере:
