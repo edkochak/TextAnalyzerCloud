@@ -39,14 +39,14 @@ jobs:
           /p:CoverletOutputFormat=opencover \
           /p:CoverletOutput="$GITHUB_WORKSPACE/coverage/fas_coverage.opencover.xml" \
           /p:ExcludeByFile="**/*Migrations/*.cs"
+        echo "Listing files in $GITHUB_WORKSPACE/coverage:"
+        ls -R "$GITHUB_WORKSPACE/coverage"
       shell: bash
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       with:
-        files: |
-          coverage/fss_coverage.opencover.xml
-          coverage/fas_coverage.opencover.xml
+        directory: ./coverage/
         fail_ci_if_error: true
     
     - name: Install ReportGenerator tool
